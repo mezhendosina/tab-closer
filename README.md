@@ -35,14 +35,9 @@ Workflow: [`.github/workflows/build-crx.yml`](.github/workflows/build-crx.yml)
      base64 -w0 key.pem
      ```
 
-3. Push a tag to build and publish to **Releases**:
+3. Bump `version` in `manifest.json`, commit, and push to `main`. The workflow creates tag `v{version}` (e.g. `v1.0.0`) and publishes a **Release** with `.crx` and `.zip`.
 
-   ```bash
-   git tag v1.0.0
-   git push origin v1.0.0
-   ```
-
-   Or run **Actions → Build CRX → Run workflow** to get `.crx` and `.zip` as downloadable artifacts (no Release without a tag).
+   Or run **Actions → Build CRX → Run workflow** manually to rebuild the current manifest version.
 
 ### Install from `.crx`
 
