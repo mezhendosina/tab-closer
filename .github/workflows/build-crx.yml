@@ -1,0 +1,71 @@
+name: Build CRX
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-crx:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Decode signing key
+        env:
+          CRX_PRIVATE_KEY: ${{ secrets.CRX_PRIVATE_KEY }}
+        run: |
+          if [ -z "$CRX_PRIVATE_KEY" ]; then
+            echo "::error::Add repository secret CRX_PRIVATE_KEY (base64 PEM). See README."
+            exit 1
+          fi
+          echo "$CRX_PRIVATE_KEY" | base64 -d > key.pem
+          chmod 600 key.pem
+
+      - name: Install crx3
+        run: npm install crx3@2.0.0 --prefix "$RUNNER_TEMP/crx-tools"
+
+      - name: Read version
+        id: meta
+        run: echo "version=$(node -p "require('./manifest.json').version")" >> "$GITHUB_OUTPUT"
+
+      - id: pack
+        name: Pack CRX and ZIP
+        run: |
+          VERSION="${{ steps.meta.outputs.version }}"
+          CRX="tabCloser-v${VERSION}.crx"
+          ZIP="tabCloser-v${VERSION}.zip"
+          STAGE="$RUNNER_TEMP/extension"
+          mkdir -p "$STAGE/icons"
+          cp manifest.json background.js "$STAGE/"
+          cp icons/*.png "$STAGE/icons/"
+          node "$RUNNER_TEMP/crx-tools/node_modules/crx3/bin/crx3.js" \
+            "$STAGE" -o "$CRX" -p key.pem -z "$ZIP"
+          echo "crx=$CRX" >> "$GITHUB_OUTPUT"
+          echo "zip=$ZIP" >> "$GITHUB_OUTPUT"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: tabCloser-v${{ steps.meta.outputs.version }}
+          path: |
+            tabCloser-v${{ steps.meta.outputs.version }}.crx
+            tabCloser-v${{ steps.meta.outputs.version }}.zip
+          if-no-files-found: error
+
+      - name: Attach to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${{ steps.pack.outputs.crx }}
+            ${{ steps.pack.outputs.zip }}
+          generate_release_notes: true
