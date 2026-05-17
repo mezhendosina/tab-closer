@@ -1,4 +1,4 @@
-const STALE_MS = 60000;
+const STALE_MS = 24 * 60 * 60 * 1000;
 const ALARM_NAME = "tab-cleanup";
 const ALARM_PERIOD_MINUTES = 60;
 
