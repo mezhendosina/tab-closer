@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TabCloser Settings</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="header">
+        <img src="icons/icon48.png" alt="" width="48" height="48" />
+        <div>
+          <h1>TabCloser</h1>
+          <p class="subtitle">Close tabs you have not opened for a while.</p>
+        </div>
+      </header>
+
+      <form id="settings-form" class="card">
+        <label class="row row-toggle">
+          <span>
+            <strong>Enable automatic cleanup</strong>
+            <small>Turn off to pause closing tabs without uninstalling.</small>
+          </span>
+          <input type="checkbox" id="enabled" name="enabled" />
+        </label>
+
+        <label class="field">
+          <span class="label">Close tabs after (days)</span>
+          <input
+            type="number"
+            id="staleDays"
+            name="staleDays"
+            min="0.1"
+            max="365"
+            step="0.1"
+            required
+          />
+          <small>Based on when you last switched to the tab.</small>
+        </label>
+
+        <label class="field">
+          <span class="label">Check every (minutes)</span>
+          <select id="checkIntervalMinutes" name="checkIntervalMinutes">
+            <option value="15">15</option>
+            <option value="30">30</option>
+            <option value="60">60</option>
+            <option value="120">120</option>
+            <option value="360">360</option>
+            <option value="720">720</option>
+          </select>
+        </label>
+
+        <fieldset class="fieldset">
+          <legend>Do not close</legend>
+          <label class="row row-check">
+            <input type="checkbox" id="skipPinned" name="skipPinned" />
+            <span>Pinned tabs</span>
+          </label>
+          <label class="row row-check">
+            <input type="checkbox" id="skipActive" name="skipActive" />
+            <span>Active tab in each window</span>
+          </label>
+          <label class="row row-check">
+            <input type="checkbox" id="skipAudible" name="skipAudible" />
+            <span>Tabs playing audio</span>
+          </label>
+        </fieldset>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" id="cleanup-now" class="btn btn-secondary">
+            Clean up now
+          </button>
+        </div>
+
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+      </form>
+    </main>
+    <script src="settings.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>

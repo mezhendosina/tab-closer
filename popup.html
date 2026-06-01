@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TabCloser</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="popup">
+      <header class="header">
+        <img src="icons/icon16.png" alt="" width="16" height="16" />
+        <h1>TabCloser</h1>
+      </header>
+
+      <p id="summary" class="summary">Loading…</p>
+
+      <div class="actions">
+        <button type="button" id="cleanup-now" class="btn btn-primary">
+          Clean up now
+        </button>
+        <button type="button" id="open-settings" class="btn btn-secondary">
+          Settings
+        </button>
+      </div>
+
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+    </main>
+    <script src="settings.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

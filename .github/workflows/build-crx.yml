@@ -66,7 +66,10 @@ jobs:
           ZIP="tabCloser-v${VERSION}.zip"
           STAGE="$RUNNER_TEMP/extension"
           mkdir -p "$STAGE/icons"
-          cp manifest.json background.js "$STAGE/"
+          cp manifest.json background.js settings.js \
+            options.html options.css options.js \
+            popup.html popup.css popup.js \
+            "$STAGE/"
           cp icons/*.png "$STAGE/icons/"
           node "$RUNNER_TEMP/crx-tools/node_modules/crx3/bin/crx3.js" \
             "$STAGE" -o "$CRX" -p key.pem -z "$ZIP"

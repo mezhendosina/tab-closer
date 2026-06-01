@@ -2,11 +2,24 @@
 
 Chrome extension that automatically closes tabs you have not switched to for 24 hours.
 
+## Settings
+
+Click the extension icon for a quick summary and **Clean up now**, or open full settings via **Settings** / right-click icon → **Options**.
+
+Configurable options:
+
+- Enable / disable automatic cleanup
+- Days before a tab is considered stale (default: 1)
+- Check interval in minutes (default: 60)
+- Skip pinned, active, or audible tabs
+
+Settings sync across Chrome via `chrome.storage.sync` when sync is enabled for your profile.
+
 ## How it works
 
 - Uses Chrome `tabs.lastAccessed` (time you last activated the tab).
-- Runs cleanup on browser startup and every 60 minutes.
-- Skips pinned tabs, the active tab in each window, and tabs playing audio.
+- Runs cleanup on browser startup and on the configured interval.
+- Skips pinned, active, and audible tabs when those options are enabled.
 
 ## Build signed `.crx` in GitHub Actions
 
@@ -64,7 +77,7 @@ Workflow: [`.github/workflows/build-crx.yml`](.github/workflows/build-crx.yml)
 
 1. On `chrome://extensions`, find TabCloser and click **Service worker** → **Inspect**.
 2. Check the console for messages like `[TabCloser] Closed N tab(s).`
-3. To test faster, temporarily change `STALE_MS` in `background.js` to `60_000` (1 minute), reload the extension, and call `runCleanup()` from the service worker console.
+3. Lower **Close tabs after (days)** in settings (e.g. `0.01` for a quick test), click **Clean up now**, or reload the extension and wait for the next alarm.
 
 ## Restore closed tabs
 
@@ -76,6 +89,8 @@ Use **Ctrl+Shift+T** (Cmd+Shift+T on Mac) or Chrome’s recently closed tabs lis
 |------|---------|
 | `manifest.json` | Extension manifest (MV3) |
 | `background.js` | Alarm scheduling and tab cleanup |
+| `settings.js` | Shared defaults and storage helpers |
+| `popup.html` / `options.html` | Quick panel and full settings UI |
 | `icons/` | Extension icons |
 | `.github/workflows/build-crx.yml` | CI: signed `.crx` + `.zip` |
 | `scripts/generate-signing-key.sh` | Local PEM for `CRX_PRIVATE_KEY` secret |
